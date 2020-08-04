@@ -1,0 +1,41 @@
+server:
+    port: 8080
+
+spring:
+      application:
+        name: GATEWAY-MICROSERVICE
+zuul:
+  ribbon:
+    eager-load:
+      enabled: true
+  sensitiveHeaders:
+  ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin
+  routes:
+    postService:
+      path: /posts/**
+      serviceId: POST-MICROSERVICE
+      stripPrefix: false
+
+    userService:
+      path: /user/**
+      serviceId: USER-MICROSERVICE
+      stripPrefix: false
+
+ribbon:
+  ReadTimeout: 5000
+  ConnectTimeout: 1000
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
+
+hystrix:
+    command:
+        fallbackcmd:
+          execution:
+            isolation:
+              thread:
+                timeoutInMilliseconds: 8000
